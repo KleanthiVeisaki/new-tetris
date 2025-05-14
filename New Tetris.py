@@ -1,35 +1,35 @@
-import pygame
-import random
-import time
-import os
+import pygame #create shapes, run commands, display texts, full game mode
+import random #random display of shapes and colors
+import time #NEW create and display time
+import os #NEW enable music
 
 colors = [
     (93, 109, 126),
-    (241, 148, 138),
-    (210, 180, 222),
-    (174, 214, 241),
-    (171, 235, 198),
-    (249, 231, 159),
-    (248, 196, 113),
-    (241, 120, 184),
+    (241, 148, 138),   #NEW red
+    (210, 180, 222),   #NEW purple
+    (174, 214, 241),   #NEW blue
+    (171, 235, 198),   #NEW green
+    (249, 231, 159),   #NEW yellow
+    (248, 196, 113),   #NEW orange
+    (241, 120, 184),   #NEW pink
 ]
 
 class Figure:
     x = 0
     y = 0
-
+   #each shape and its possible rotations
     figures = [
-        [[1, 2, 5, 9], [0, 4, 5, 6], [1, 5, 9, 8], [4, 5, 6, 10]],
-        [[1, 2, 6, 10], [5, 6, 7, 9], [2, 6, 10, 11], [3, 5, 6, 7]],
-        [[1, 4, 5, 6], [1, 4, 5, 9], [4, 5, 6, 9], [1, 5, 6, 9]],
-        [[2, 6, 3], [2, 6, 7], [3, 7, 6], [3, 7, 2]],
-        [[4, 5, 9, 10], [2, 6, 5, 9]],
-        [[6, 7, 9, 10], [1, 5, 6, 10]],
-        [[1, 5, 9, 13], [4, 5, 6, 7]],
-        [[1, 5, 9], [4, 5, 6]],
-        [[1, 2, 5, 6]],
-        [[2, 6], [3, 2]],
-        [[2, 2]],
+        [[1, 2, 5, 9], [0, 4, 5, 6], [1, 5, 9, 8], [4, 5, 6, 10]], #L
+        [[1, 2, 6, 10], [5, 6, 7, 9], [2, 6, 10, 11], [3, 5, 6, 7]], #Γ
+        [[1, 4, 5, 6], [1, 4, 5, 9], [4, 5, 6, 9], [1, 5, 6, 9]], #Τ
+        [[2, 6, 3], [2, 6, 7], [3, 7, 6], [3, 7, 2]], #NEW corner
+        [[4, 5, 9, 10], [2, 6, 5, 9]], #Z
+        [[6, 7, 9, 10], [1, 5, 6, 10]], #revers Z
+        [[1, 5, 9, 13], [4, 5, 6, 7]], #1*4
+        [[1, 5, 9], [4, 5, 6]], #NEW 1*3
+        [[1, 2, 5, 6]], #2*2
+        [[2, 6], [3, 2]], #NEW 1*2
+        [[2, 2]], #NEW 1*1
     ]
 
     def __init__(self, x, y):
@@ -58,10 +58,10 @@ class Tetris:
         self.y = 60
         self.zoom = 20
         self.figure = None
-        self.lives = 3
-        self.lost_life_message = False
-        self.message_timer = 0
-        self.last_blocks = []
+        self.lives = 3 #NEW initialization of lives
+        self.lost_life_message = False #NEW initialazation of flag
+        self.message_timer = 0 #NEW timer
+        self.last_blocks = [] #NEW initialazation of array of last 10 blocks
 
         for i in range(height):
             self.field.append([0 for _ in range(width)])
@@ -112,13 +112,13 @@ class Tetris:
                     y = i + self.figure.y
                     if 0 <= y < self.height and 0 <= x < self.width:
                         self.field[y][x] = self.figure.color
-                        self.last_blocks.append((y, x))
+                        self.last_blocks.append((y, x)) # NEW the last blocks are added
         self.break_lines()
         self.new_figure()
 
         if self.intersects():
-            self.lives -= 1
-            if self.lives >= 1:
+            self.lives -= 1 #NEW remove a life
+            if self.lives >= 1:#NEW if lives are more than 1 the last 10 blocks are removed else "gameover"
                 for _ in range(10):
                     if self.last_blocks:
                         y, x = self.last_blocks.pop()
@@ -146,21 +146,23 @@ class Tetris:
 pygame.init()
 pygame.mixer.init()
 
-pygame.mixer.init()
+#NEW addition of music
 base_path = os.path.dirname(__file__)
 music_path = os.path.join(base_path, "song.mp3")
 pygame.mixer.music.load(music_path)
 pygame.mixer.music.play(-1)
 
-
+#NEW Define some new colors
 BLUE = (41, 128, 185)
 LIGHT_BLUE = (231, 250, 255)
 GRAY = (128, 128, 128)
 
 size = (400, 500)
 screen = pygame.display.set_mode(size)
-pygame.display.set_caption("New Tetris")
+pygame.display.set_caption("New Tetris") #NEW change of caption
 
+
+# Loop until the user clicks the close button.
 done = False
 clock = pygame.time.Clock()
 fps = 25
@@ -168,7 +170,7 @@ game = Tetris(20, 10)
 counter = 0
 pressing_down = False
 
-start_time = time.time()
+start_time = time.time() #NEW start of time
 end_time = None
 
 while not done:
@@ -198,7 +200,7 @@ while not done:
                 game.go_space()
             if event.key == pygame.K_ESCAPE:
                 game = Tetris(20, 10)
-                start_time = time.time()
+                start_time = time.time() #NEW end of time
                 end_time = None
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN:
@@ -230,6 +232,7 @@ while not done:
             end_time = int(time.time() - start_time)
         elapsed_time = end_time
 
+#NEW sizes of display of "Gameover" screen
     font = pygame.font.SysFont('Calibri', 25, True, False)
     font1 = pygame.font.SysFont('Calibri', 55, True, False)
     text_score = font.render("Score: " + str(game.score), True, BLUE)
@@ -239,6 +242,7 @@ while not done:
     screen.blit(text_lives, [0, 30])
     screen.blit(text_timer, [270, 0])
 
+#display of "you lost a life"
     if game.lost_life_message:
         text_lost_life = font.render("    You lost a live!", True, (255, 8, 94 ))
         screen.blit(text_lost_life, [100, 160])
@@ -246,6 +250,7 @@ while not done:
         if game.message_timer <= 0:
             game.lost_life_message = False
 
+# NEW display of "Gameover" screen
     if game.state == "gameover":
         text_game_over = font1.render("    Game Over", True, (231, 84, 187))
         text_restart = font1.render(     " Press ESC",   True, (42, 184, 234))
